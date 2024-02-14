@@ -18,7 +18,7 @@ for file in os.listdir(dataset_path):
 final_list=list(set(words))
 
 inverted_index={}
-num=0
+
 for word in final_list:
     
     documents = []
@@ -30,14 +30,9 @@ for word in final_list:
             if word in data:
                 documents.append(file)
     inverted_index[word] = documents
-    num=num+1
-    print(num)
 
 #have to wait till it reads and add all the words in dictionary.
     
 with open("inverted_index.pickle","wb") as inv_file:
     pickle.dump(inverted_index,inv_file)
 
-
-for term, documents in inverted_index.items():
-    print(term, "->", ", ".join(documents))
