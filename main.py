@@ -15,15 +15,15 @@ def preprocessing_query(input_string):
     return filtered_token
 
 def and_op(term1,term2):
-    result=inverted_index[term1].intersection(inverted_index[term2])
+    result=inverted_index.get(term1).intersection(inverted_index.get(term2))
     return  list(result)
 
 def or_op(term1,term2):
-    result=inverted_index[term1].union(inverted_index[term2])
+    result=inverted_index.get(term1).union(inverted_index.get(term2))
     return list(result)
 
 def and_not_op(term1,term2):
-    result=inverted_index[term1].difference(inverted_index[term2])
+    result=inverted_index.get(term1).difference(inverted_index.get(term2))
     return list(result)
 
 def op_or_not(term1, term2, all_docs):
@@ -39,24 +39,16 @@ for i in range(0,x):
 tokens=preprocessing_query(input_string)
 
 tokens=list(tokens)
+temp_list=[]
 
+for i in range(len(tokens)-1):
+    if(operators[i]=="AND"):
+        temp_list=and_op(tokens[i],tokens[i+1])
+    elif(operators[i]=="OR"):
+        temp_list=or_op(tokens[i],tokens[i+1])
+    elif(operators[i]=="AND NOT"):
+        temp_list=and_not_op(tokens[i], tokens[i + 1])
+    # elif(operators[i]=="OR NOT"):
+    #     final_list.append(op_or_not(tokens[i],tokens[i+1],))
 
-result_set = set(inverted_index.get(tokens[0], set()))
-
-# Iterate through tokens and operators together
-for i, op in enumerate(operators, start=1):
-    if i < len(tokens):  # Ensure there's a next term to process
-        next_set = set(inverted_index.get(tokens[i], set()))
-        if op.upper() == "AND":
-            result_set = and_op(result_set, next_set)
-        elif op.upper() == "OR":
-            result_set = or_op(result_set, next_set)
-        elif op.upper() == "AND NOT":
-            result_set = and_not_op(result_set, next_set)
-        # Placeholder for "OR NOT" logic
-        # elif op.upper() == "OR NOT":
-        #     result_set = or_not_op(result_set, next_set, all_docs)
-
-# Convert the result set to a list and sort it for consistent output
-final_list = sorted(list(result_set))
-print(final_list)
+print(temp_list)
