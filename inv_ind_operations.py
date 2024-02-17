@@ -51,4 +51,5 @@ for i in range(x):
         continue
 
     result_set = perform_operation(tokens, operators)
+    print("no of documents retrieved:" + str(len(result_set)))
     print("Documents retrieved:", result_set)
