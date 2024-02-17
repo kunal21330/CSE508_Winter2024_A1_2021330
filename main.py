@@ -1,54 +1,54 @@
 import pickle
-import string 
-import nltk
+import string
+
 from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
 
-with open('inverted_index.pickle','rb') as k:
-    inverted_index=pickle.load(k)
+with open('inverted_index.pickle', 'rb') as k:
+    inverted_index = pickle.load(k)
 
-stop_words=set(stopwords.words("english"))
+stop_words = set(stopwords.words("english"))
+all_docs = set()
+for doc_set in inverted_index.values():
+    all_docs.update(doc_set)
+
 def preprocessing_query(input_string):
     lower_case = input_string.lower()
     remove_punctuation = lower_case.translate(str.maketrans("", "", string.punctuation))
-    tokenize = nltk.word_tokenize(remove_punctuation)
-    filtered_token = [word for word in tokenize if not (word in stop_words)]
+    tokenize = word_tokenize(remove_punctuation)
+    filtered_token = [word for word in tokenize if word not in stop_words]
     return filtered_token
 
-def and_op(term1,term2):
-    result=inverted_index.get(term1).intersection(inverted_index.get(term2))
-    return  list(result)
+def perform_operation(terms, operators):
+    if not terms:
+        return set()
 
-def or_op(term1,term2):
-    result=inverted_index.get(term1).union(inverted_index.get(term2))
-    return list(result)
+    current_result = inverted_index.get(terms[0], set())
 
-def and_not_op(term1,term2):
-    result=inverted_index.get(term1).difference(inverted_index.get(term2))
-    return list(result)
+    for i, op in enumerate(operators):
+        next_term_set = inverted_index.get(terms[i + 1], set())
+        if op == 'AND':
+            current_result &= next_term_set
+        elif op == 'OR':
+            current_result |= next_term_set
+        elif op == 'AND_NOT':
+            current_result -= next_term_set
+        elif op == 'OR_NOT':
+            current_result.union(all_docs.difference(next_term_set))
 
-def op_or_not(term1, term2, all_docs):
-    result=term1.union(all_docs.difference(term2))
-    return result
+    return current_result
 
 
-x=int(input("no of query:"))
-for i in range(0,x):
-    input_string=input()
-    operators=input().split()
 
-tokens=preprocessing_query(input_string)
+x = int(input("Number of queries: "))
+for i in range(x):
+    input_string = input("Enter your query: ")
+    operators = input("Enter operators separated by space: ").split()
 
-tokens=list(tokens)
-temp_list=[]
+    tokens = preprocessing_query(input_string)
+    if len(tokens) <= len(operators):
+        print("Invalid input: Number of terms should be more than the number of operators.")
+        continue
 
-for i in range(len(tokens)-1):
-    if(operators[i]=="AND"):
-        temp_list=and_op(tokens[i],tokens[i+1])
-    elif(operators[i]=="OR"):
-        temp_list=or_op(tokens[i],tokens[i+1])
-    elif(operators[i]=="AND NOT"):
-        temp_list=and_not_op(tokens[i], tokens[i + 1])
-    # elif(operators[i]=="OR NOT"):
-    #     final_list.append(op_or_not(tokens[i],tokens[i+1],))
-
-print(temp_list)
+    result_set = perform_operation(tokens, operators)
+    print("Documents matching the query:", result_set)

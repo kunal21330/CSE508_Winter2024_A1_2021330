@@ -15,21 +15,24 @@ for file in os.listdir(dataset_path):
         words.extend(data)
 
 
-final_list=list(set(words))
+final_list=set(words)
 
 inverted_index={}
 
+num=0
 for word in final_list:
     
-    documents = []
+    documents = set()
     for file in os.listdir(dataset_path):
         if file.endswith('.txt'):
             file_path=os.path.join(dataset_path,file)
             with open(file_path,"r") as k:
                 data=k.read().split()
             if word in data:
-                documents.append(file)
+                documents.add(file)
     inverted_index[word] = documents
+    num+=1
+    print(num)
 
 #have to wait till it reads and add all the words in dictionary.
     
