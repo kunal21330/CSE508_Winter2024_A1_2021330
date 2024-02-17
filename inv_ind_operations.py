@@ -1,6 +1,5 @@
 import pickle
 import string
-
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
@@ -8,6 +7,7 @@ with open('inverted_index.pickle', 'rb') as k:
     inverted_index = pickle.load(k)
 
 stop_words = set(stopwords.words("english"))
+
 all_docs = set()
 for doc_set in inverted_index.values():
     all_docs.update(doc_set)
@@ -47,8 +47,8 @@ for i in range(x):
 
     tokens = preprocessing_query(input_string)
     if len(tokens) <= len(operators):
-        print("Invalid input: Number of terms should be more than the number of operators.")
+        print("Invalid input!!")
         continue
 
     result_set = perform_operation(tokens, operators)
-    print("Documents matching the query:", result_set)
+    print("Documents retrieved:", result_set)
