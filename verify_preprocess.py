@@ -11,6 +11,7 @@ for file in os.listdir(dataset_path):
         with open(file_path, 'r') as k:
             data = k.read()
             print(data)
+            print("-------------------------------------------------------------------------------------")
             text_files_count += 1
             if text_files_count >= 5:
                 break
@@ -26,4 +27,5 @@ for file in os.listdir(preprocessed_file_path):
         with open(file_path, 'r') as f:
             P_data = f.read()
             print(P_data)
+            print("-------------------------------------------------------------------------------------")
             preprocessed_files_count += 1

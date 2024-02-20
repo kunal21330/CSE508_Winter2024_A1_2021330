@@ -4,11 +4,6 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
 def preprocess_query(input_string):
-    """
-    Preprocess the input string: tokenize, convert to lowercase,
-    remove punctuation, and filter out stopwords.
-    """
-    # Tokenize and preprocess the input string
     tokens = word_tokenize(input_string)
     lower_case = [word.lower() for word in tokens]
     remove_punctuation = [word.translate(str.maketrans("", "", string.punctuation)) for word in lower_case]
@@ -22,11 +17,9 @@ with open('positional_index.pickle', 'rb') as file:
 stop_words = set(stopwords.words("english"))
 
 number_of_queries = int(input("Number of queries: "))
-for _ in range(number_of_queries):
+for i in range(number_of_queries):
     input_string = input("Enter your query: ")
     query_tokens = preprocess_query(input_string)
-
-    # Execute phrase query directly here
     documents_positions = {}
     if query_tokens:
         term = query_tokens[0]
